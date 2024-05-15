@@ -1,5 +1,6 @@
 let parola_nascosta = document.getElementById("parola_nascosta");
 
+//per recuperare la parola dal server
 fetch("/parola")
     .then((response) => response.json())
     .then((parola) => {
@@ -13,28 +14,29 @@ fetch("/parola")
         // Aggiunge event listeners ai tasti della tastiera
         document.querySelectorAll('.keyboard-button').forEach(button => {
             button.addEventListener('click', function () {
-                const lettera = this.textContent; // Ottiene la lettera dal tasto
-                verificaLettera(lettera, this); // Verifica la presenza della lettera e aggiorna il tasto
+                const lettera = this.textContent;
+                verifica_lettera(lettera, this);
             });
         });
 
-        const verificaLettera = (lettera, tasto) => {
+        const verifica_lettera = (lettera, tasto) => {
 
             //così verifico il tasto premuto
             console.log(lettera);
 
+            // Verifica la presenza della lettera e aggiorna il tasto
             if (parola_scelta.includes(lettera.toLowerCase())) {
-                // La lettera è presente nella parola
-                tasto.classList.add('btn-success'); // Cambia il colore in verde
-                aggiornaParola(lettera); // Aggiorna la visualizzazione della parola
+                tasto.classList.add('btn-success');
+                aggiorna_parola(lettera);
             } else {
-                // La lettera non è presente nella parola
-                tasto.classList.add('btn-danger'); // Cambia il colore in rosso
+                tasto.classList.add('btn-danger');
             }
-            tasto.disabled = true; // Disabilita il tasto
+
+            //disabilitazione del tasto premuto
+            tasto.disabled = true;
         }
 
-        const aggiornaParola = (lettera) => {
+        const aggiorna_parola = (lettera) => {
             let parolaVisibile = parola_nascosta.textContent.split(' ');
             for (let i = 0; i < parola_scelta.length; i++) {
                 if (parola_scelta[i] === lettera) {
