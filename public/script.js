@@ -1,5 +1,6 @@
 let parola_nascosta = document.getElementById("parola_nascosta");
 let errori_fatti = document.getElementById("errori_fatti");
+let messaggio_hai_perso = document.getElementById("messaggio_hai_perso");
 let errori = 0;
 
 //per recuperare la parola dal server
@@ -72,8 +73,10 @@ fetch("/parola")
                 document.getElementById("hai_vinto").style.display = "flex";
             }
         }
-    });
 
-function hai_perso() {
-    document.getElementById("hai_perso").style.display = "flex";
-}
+        //se perdi
+        const hai_perso = () => {
+            messaggio_hai_perso.innerHTML = "Hai perso! La parola era: " + parola_scelta;
+            document.getElementById("hai_perso").style.display = "flex";
+        }
+    });
