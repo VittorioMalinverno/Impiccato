@@ -1,15 +1,20 @@
 let parola_nascosta = document.getElementById("parola_nascosta");
+let errori_fatti = document.getElementById("errori_fatti");
+let errori = 0;
 
 //per recuperare la parola dal server
 fetch("/parola")
     .then((response) => response.json())
     .then((parola) => {
 
-        // Ottiene la parola scelta dal server e la visualizza
+        //ottiene la parola scelta dal server e la visualizza
         let parola_scelta = parola.parola_scelta;
 
         //stampa in console la parola (così si può barare)
         console.log(parola_scelta);
+
+        //imposta i trattini in base alla lunghezza della parola scelta
+        parola_nascosta.textContent = '_ '.repeat(parola_scelta.length).trim();
 
         // Aggiunge event listeners ai tasti della tastiera
         document.querySelectorAll('.keyboard-button').forEach(button => {
@@ -30,19 +35,45 @@ fetch("/parola")
                 aggiorna_parola(lettera);
             } else {
                 tasto.classList.add('btn-danger');
+
+                //aumento del contatore degli errori
+                errori++;
+                errori_fatti.textContent = errori;
+
+                //controllo degli errori massimi
+                if (errori >= 7) {
+                    document.querySelectorAll('.keyboard-button').forEach(button => button.disabled = true);
+                    hai_perso();
+                }
             }
 
             //disabilitazione del tasto premuto
             tasto.disabled = true;
         }
 
+        //funzione che aggiorna la parola visualizzata
         const aggiorna_parola = (lettera) => {
-            let parolaVisibile = parola_nascosta.textContent.split(' ');
+            let parola_visibile = parola_nascosta.textContent.split(' ');
             for (let i = 0; i < parola_scelta.length; i++) {
-                if (parola_scelta[i] === lettera) {
-                    parolaVisibile[i] = lettera;
+                if (parola_scelta[i].toLowerCase() === lettera.toLowerCase()) {
+                    parola_visibile[i] = lettera;
                 }
             }
-            parola_nascosta.textContent = parolaVisibile.join(' ');
+            parola_nascosta.textContent = parola_visibile.join(' ');
+
+            //controllo se hai vinto
+            verifica_vittoria();
+        }
+
+        //se vinci 
+        const verifica_vittoria = () => {
+            // Verifica se la parola nascosta non contiene più trattini, indicando che tutte le lettere sono state indovinate
+            if (!parola_nascosta.textContent.includes('_')) {
+                document.getElementById("hai_vinto").style.display = "flex";
+            }
         }
     });
+
+function hai_perso() {
+    document.getElementById("hai_perso").style.display = "flex";
+}
