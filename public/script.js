@@ -1,7 +1,8 @@
 let parola_nascosta = document.getElementById("parola_nascosta");
 let errori_fatti = document.getElementById("errori_fatti");
 let messaggio_hai_perso = document.getElementById("messaggio_hai_perso");
-let errori = 0;
+let immagine_impiccato = document.getElementById("immagine_impiccato");
+let errori = 1;
 
 //per recuperare la parola dal server
 fetch("/parola")
@@ -39,10 +40,13 @@ fetch("/parola")
 
                 //aumento del contatore degli errori
                 errori++;
-                errori_fatti.textContent = errori;
+                errori_fatti.textContent = errori - 1;
+
+                //ricalcola l'immagine dell'impiccato
+                immagine_impiccato.src = "./immagini_impiccato/" + errori + ".png";
 
                 //controllo degli errori massimi
-                if (errori >= 7) {
+                if (errori >= 8) {
                     document.querySelectorAll('.keyboard-button').forEach(button => button.disabled = true);
                     hai_perso();
                 }
